@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-x*)5s_om!jooy5ewy8n*oqjc#6ziymj=2%a5jdjg^urmp*e8k5"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -59,6 +59,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware"
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -105,6 +106,8 @@ CORS_ORIGIN_WHITELIST = ["http://localhost:8080"]
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+import dj_database_url
+from decouple import config
 
 DATABASES = {
     # "default": {
@@ -119,14 +122,9 @@ DATABASES = {
     #     'HOST': '127.0.0.1',
     #     'DATABASE_PORT': '5432',
     # }
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "federacion",
-        "USER": "admin",
-        "PASSWORD": "contraseniasegura",
-        "HOST": "database",
-        "DATABASE_PORT": "5430",
-    },
+ 	'default': dj_database_url.config(
+ 		default = config('DATABASE_URL')
+ 		)
     # "postgres_leonel": {
     #     "ENGINE": "django.db.backends.postgresql",
     #     "NAME": "federacion",
@@ -178,6 +176,13 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_DIRS = (
+	os.path.join(BASE_DIR, 'static')
+	)
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
